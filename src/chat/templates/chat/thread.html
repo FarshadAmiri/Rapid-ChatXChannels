@@ -21,6 +21,36 @@
 
 <script>
 // websocket scripts
+var loc = window.location
+var formData = $("#form")
+var msgInput = $("#id_message")
+
+WsStar = 'ws://'
+if (loc.protocol == "https:") {WsStar = 'wss://'};
+var endpoint = WsStar + loc.host + loc.pathname
+var socket = new WebSocket(endpoint);
+console.log ("endpoint", endpoint);
+
+
+socket.onmessage = function(e) {
+    console.log ("message", e)
+}
+socket.onopen = function(e) {
+    console.log ("open", e)
+    var form = $("#form")[0]
+    formData.submit(function(event) {
+        event.preventDefault();
+        socket.send(msgInput.val());
+        msgInput.val('');
+    })
+
+}
+socket.onerror  = function(e) {
+    console.log ("error", e)
+}
+socket.onclose  = function(e) {
+    console.log ("close", e)
+}
 
 </script>
 {% endblock %}
