@@ -40,8 +40,15 @@ socket.onopen = function(e) {
     var form = $("#form")[0]
     formData.submit(function(event) {
         event.preventDefault();
-        socket.send(msgInput.val());
+        //var formDataSerialized = formData.serialize()
+        var data = {
+            'message': msgInput.val(),
+        }
+        //socket.send(formDataSerialized)
+        //socket.send(msgInput.val());
+        socket.send(JSON.stringify(data));
         msgInput.val('');
+        //formData[0].reset();
     })
 
 }

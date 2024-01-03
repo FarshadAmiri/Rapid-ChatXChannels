@@ -15,13 +15,18 @@ class ChatConsumer(AsyncConsumer):
         chat_mate = self.scope["url_route"]["kwargs"]["username"]
         me = self.scope["user"]
         print(chat_mate, me)
-        # await asyncio.sleep(5)
-        # await self.send({
-        #     "type": "websocket.close"
-        # })
 
     async def websocket_receive(self, event):
         print("receive", event)
+        print(type(event))
+        client_data = event.get('text', None)
+        if client_data is not None:
+            dict_data = json.loads(client_data)
+            msg = dict_data.get("message")
+        await self.send({
+            "type": "websocket.send",
+            "text": msg, 
+        })
 
     async def websocket_disconnect(self, event):
         print("disconnected", event)
