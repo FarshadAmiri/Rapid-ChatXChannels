@@ -24,17 +24,21 @@
 var loc = window.location
 var formData = $("#form")
 var msgInput = $("#id_message")
+var chatHolder = $("#chat-items")
 
-WsStar = 'ws://'
-if (loc.protocol == "https:") {WsStar = 'wss://'};
-var endpoint = WsStar + loc.host + loc.pathname
-var socket = new WebSocket(endpoint);
+protocol = 'ws://'
+if (loc.protocol == "https:") {protocol = 'wss://'};
+var endpoint = protocol + loc.host + loc.pathname
+var socket = new ReconnectingWebSocket(endpoint);
 console.log ("endpoint", endpoint);
 
 
 socket.onmessage = function(e) {
     console.log ("message", e)
+    var chatMsgData = JSON.parse(e.data)
+    chatHolder.append("<li>" + chatMsgData.message + " via " + chatMsgData.username + "</li>")
 }
+
 socket.onopen = function(e) {
     console.log ("open", e)
     var form = $("#form")[0]
@@ -50,8 +54,8 @@ socket.onopen = function(e) {
         msgInput.val('');
         //formData[0].reset();
     })
-
 }
+
 socket.onerror  = function(e) {
     console.log ("error", e)
 }
